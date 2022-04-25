@@ -1,13 +1,13 @@
-﻿namespace xadrez_console.Tabuleiro
+﻿namespace xadrez_console.board
 {
-    class Posicao
+    class Position
     {
         public int line { get; set; }
         public int column { get; set; }
 
-        public Posicao() { }
+        public Position() { }
 
-        public Posicao(int line, int column)
+        public Position(int line, int column)
         {
             this.line = line;
             this.column = column;
