@@ -7,14 +7,23 @@ namespace xadrez_console {
         static void Main(string[] args) {
             try
             {
-                Board board = new Board(8, 8);
+                ChessGame game = new ChessGame();
 
-                board.SetPiece(new Tower(board, Color.Black), new Position(0, 0));
-                board.SetPiece(new Tower(board, Color.Black), new Position(1, 7));
-                board.SetPiece(new King(board, Color.Black), new Position(2, 4));
-                board.SetPiece(new King(board, Color.White), new Position(3, 5));
+                while (!game.Finished)
+                {
+                    Console.Clear();
+                    Screen.PrintBoard(game.Board);
 
-                Screen.PrintBoard(board);
+                    Console.WriteLine();
+                    Console.Write("Origem: ");
+                    Position origin = Screen.ReadChessPosition().ToPosition(); 
+                    
+                    Console.Write("Destino: ");
+                    Position destination = Screen.ReadChessPosition().ToPosition();
+
+                    game.SetMove(origin, destination);
+                }
+
             }
             catch (Exception e)
             {
