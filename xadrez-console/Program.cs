@@ -7,17 +7,14 @@ namespace xadrez_console {
         static void Main(string[] args) {
             try
             {
-                //Board board = new Board(8, 8);
+                Board board = new Board(8, 8);
 
-                //board.SetPiece(new Tower(board, Color.Black), new Position(0, 0));
-                //board.SetPiece(new Tower(board, Color.Black), new Position(1, 8));
-                //board.SetPiece(new King(board, Color.Black), new Position(2, 4));
+                board.SetPiece(new Tower(board, Color.Black), new Position(0, 0));
+                board.SetPiece(new Tower(board, Color.Black), new Position(1, 7));
+                board.SetPiece(new King(board, Color.Black), new Position(2, 4));
+                board.SetPiece(new King(board, Color.White), new Position(3, 5));
 
-                //Screen.PrintBoard(board);
-
-                ChessPosition pos = new ChessPosition('c', 7);
-                Console.WriteLine(pos);
-                Console.WriteLine(pos.ToPosition());
+                Screen.PrintBoard(board);
             }
             catch (Exception e)
             {
