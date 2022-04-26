@@ -50,6 +50,7 @@
     <Compile Include="board\Color.cs" />
     <Compile Include="board\Piece.cs" />
     <Compile Include="board\Position.cs" />
+    <Compile Include="Screen.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
