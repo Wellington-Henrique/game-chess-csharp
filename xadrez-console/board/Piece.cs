@@ -7,12 +7,12 @@
         public int NumberOfMoves { get; set; }
         public Board Board { get; set; }
 
-        public Piece(Position position, Color color, int numberOfMoves, Board board)
+        public Piece(Color color, Board board)
         {
-            Position = position;
-            Color = color;
-            NumberOfMoves = numberOfMoves;
+            Position = null;
             Board = board;
+            Color = color;
+            NumberOfMoves = 0;
         }
     }
 }
