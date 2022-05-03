@@ -16,20 +16,25 @@ namespace xadrez_console {
 
                     Console.WriteLine();
                     Console.Write("Origem: ");
-                    Position origin = Screen.ReadChessPosition().ToPosition(); 
-                    
+                    Position origin = Screen.ReadChessPosition().ToPosition();
+
+                    bool[,] possiblePositions = game.Board.Piece(origin).PossibleMoves();
+
+                    Console.Clear();
+                    Screen.PrintBoard(game.Board, possiblePositions);
+
+                    Console.WriteLine();
                     Console.Write("Destino: ");
                     Position destination = Screen.ReadChessPosition().ToPosition();
 
                     game.SetMove(origin, destination);
                 }
 
-            }
-            catch (Exception e)
+        } catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
-            Console.ReadLine();
+    Console.ReadLine();
         }
     }
 }
