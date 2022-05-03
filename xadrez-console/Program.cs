@@ -11,23 +11,38 @@ namespace xadrez_console {
 
                 while (!game.Finished)
                 {
-                    Console.Clear();
-                    Screen.PrintBoard(game.Board);
+                    try
+                    {
+                        Console.Clear();
+                        Screen.PrintBoard(game.Board);
+                        Console.WriteLine();
 
-                    Console.WriteLine();
-                    Console.Write("Origem: ");
-                    Position origin = Screen.ReadChessPosition().ToPosition();
+                        Console.WriteLine($"Turno: {game.Round}");
+                        Console.WriteLine($"Aguardando jogada: {game.CurrentPlayer}");
 
-                    bool[,] possiblePositions = game.Board.Piece(origin).PossibleMoves();
+                        Console.WriteLine();
+                        Console.Write("Origem: ");
+                        Position origin = Screen.ReadChessPosition().ToPosition();
+                        game.ValidateOriginPosition(origin);
 
-                    Console.Clear();
-                    Screen.PrintBoard(game.Board, possiblePositions);
+                        bool[,] possiblePositions = game.Board.Piece(origin).PossibleMoves();
 
-                    Console.WriteLine();
-                    Console.Write("Destino: ");
-                    Position destination = Screen.ReadChessPosition().ToPosition();
+                        Console.Clear();
+                        Screen.PrintBoard(game.Board, possiblePositions);
 
-                    game.SetMove(origin, destination);
+                        Console.WriteLine();
+                        Console.Write("Destino: ");
+                        Position destination = Screen.ReadChessPosition().ToPosition();
+                        game.ValidateDestinationPosition(origin, destination);
+
+                        game.MakesMove(origin, destination);
+
+                    } catch (BoardException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.ReadLine();
+                    }
+                    
                 }
 
         } catch (Exception e)
