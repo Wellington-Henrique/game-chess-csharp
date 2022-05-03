@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using xadrez_console.board;
 using xadrez_console.chess;
 
@@ -6,6 +7,40 @@ namespace xadrez_console
 {
     internal class Screen
     {
+        public static void PrintGame(ChessGame game)
+        {
+            Screen.PrintBoard(game.Board);
+            Console.WriteLine();
+            PrintCapturedPieces(game);
+            Console.WriteLine();
+            Console.WriteLine($"Turno: {game.Round}");
+            Console.WriteLine($"Aguardando jogada: {game.CurrentPlayer}");
+        }
+
+        public static void PrintCapturedPieces(ChessGame game)
+        {
+            Console.WriteLine("Peças capuradas");
+            Console.Write("Brancas: ");
+            PrintSet(game._capturedPieces(Color.White));
+            Console.WriteLine();
+            Console.Write("Pretas: ");
+            ConsoleColor aux = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            PrintSet(game._capturedPieces(Color.Black));
+            Console.ForegroundColor = aux;
+            Console.WriteLine();
+        }
+
+        public static void PrintSet(HashSet<Piece> set)
+        {
+            Console.Write("[ ");
+            foreach (Piece piece in set)
+            {
+                Console.Write(piece + " ");
+            }
+            Console.Write("]");
+        }
+
         public static void PrintBoard(Board board)
         {
             for (int i = 0; i < board.Lines; i++)
