@@ -2,14 +2,15 @@
 
 namespace xadrez_console.chess
 {
-    internal class Tower : Piece
+    internal class Queen : Piece
     {
-        public Tower(Board board, Color color) : base(color, board) {
+        public Queen(Board board, Color color) : base(color, board)
+        {
         }
 
         public override string ToString()
         {
-            return "T";
+            return "D";
         }
 
         private bool CanMove(Position pos)
@@ -75,7 +76,60 @@ namespace xadrez_console.chess
                 pos.DefineValues(pos.Line + 1, pos.Column);
             }
 
+            //no
+            pos.DefineValues(Position.Line - 1, Position.Column - 1);
+            while (Board.ValidPosition(pos) && CanMove(pos))
+            {
+                mat[pos.Line, pos.Column] = true;
+                if (Board.Piece(pos) != null && Board.Piece(pos).Color != Color)
+                {
+                    break;
+                }
+
+                pos.DefineValues(pos.Line - 1, pos.Column - 1);
+            }
+
+            //ne
+            pos.DefineValues(Position.Line - 1, Position.Column + 1);
+            while (Board.ValidPosition(pos) && CanMove(pos))
+            {
+                mat[pos.Line, pos.Column] = true;
+                if (Board.Piece(pos) != null && Board.Piece(pos).Color != Color)
+                {
+                    break;
+                }
+
+                pos.DefineValues(pos.Line - 1, pos.Column - 1);
+            }
+
+            //se
+            pos.DefineValues(Position.Line + 1, Position.Column + 1);
+            while (Board.ValidPosition(pos) && CanMove(pos))
+            {
+                mat[pos.Line, pos.Column] = true;
+                if (Board.Piece(pos) != null && Board.Piece(pos).Color != Color)
+                {
+                    break;
+                }
+
+                pos.DefineValues(pos.Line + 1, pos.Column + 1);
+            }
+
+            //so
+            pos.DefineValues(Position.Line + 1, Position.Column - 1);
+            while (Board.ValidPosition(pos) && CanMove(pos))
+            {
+                mat[pos.Line, pos.Column] = true;
+                if (Board.Piece(pos) != null && Board.Piece(pos).Color != Color)
+                {
+                    break;
+                }
+
+                pos.DefineValues(pos.Line + 1, pos.Column - 1);
+            }
+
             return mat;
         }
     }
 }
+
