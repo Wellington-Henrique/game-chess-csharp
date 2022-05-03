@@ -40,12 +40,14 @@ namespace xadrez_console {
                     }
                     
                 }
-
-        } catch (Exception e)
+                Console.Clear();
+                Screen.PrintGame(game);
+            } 
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
-    Console.ReadLine();
+        Console.ReadLine();
         }
     }
 }

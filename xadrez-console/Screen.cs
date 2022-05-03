@@ -14,10 +14,18 @@ namespace xadrez_console
             PrintCapturedPieces(game);
             Console.WriteLine();
             Console.WriteLine($"Turno: {game.Round}");
-            Console.WriteLine($"Aguardando jogada: {game.CurrentPlayer}");
 
-            if (game.Check)
-                Console.WriteLine("XEQUE!");
+            if (!game.Finished)
+            {
+                Console.WriteLine($"Aguardando jogada: {game.CurrentPlayer}");
+
+                if (game.Check)
+                    Console.WriteLine("XEQUE!");
+            } else
+            {
+                Console.WriteLine("XEQUEMATE!"); 
+                Console.WriteLine($"Vencedor: {game.CurrentPlayer}");
+            }
         }
 
         public static void PrintCapturedPieces(ChessGame game)
