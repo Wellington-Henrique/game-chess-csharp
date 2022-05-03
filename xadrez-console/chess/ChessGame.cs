@@ -11,31 +11,59 @@ namespace xadrez_console.chess
         public bool Finished { get; set; }
         private HashSet<Piece> _pieces = new HashSet<Piece>();
         private HashSet<Piece> _captured = new HashSet<Piece>();
+        public bool Check { get; private set; }
         public ChessGame()
         {
             Board = new Board(8, 8);
             Round = 1;
             CurrentPlayer = Color.White;
             Finished = false;
+            Check = false;
             StartGame();
         }
 
-        public void SetMove(Position origin, Position destination)
+        public Piece SetMove(Position origin, Position destination)
         {
             Piece p = Board.RemovePiece(origin);    
+
             p.IncrementMove();
-            Piece CapturedPiece = Board.RemovePiece(destination);
+            Piece capturedPiece = Board.RemovePiece(destination);
             Board.SetPiece(p, destination);
 
-            if (CapturedPiece != null)
-                _captured.Add(CapturedPiece);
+            if (capturedPiece != null)
+                _captured.Add(capturedPiece);
+
+            return capturedPiece;
         }
 
         public void MakesMove(Position origin, Position destination)
         {
-            SetMove(origin, destination);
+            Piece capturedPiece = SetMove(origin, destination);
+
+            if (IsInCheck(CurrentPlayer))
+            {
+                UndoMovement(origin, destination, capturedPiece);
+                throw new BoardException("Você não pode se colocar em xeque!");
+            }
+
+            Check = IsInCheck(Opponent(CurrentPlayer)) ? true : false;
+
             Round++;
             ChangePlayer();
+        }
+
+        public void UndoMovement(Position origin, Position destination, Piece captured)
+        {
+            Piece p = Board.RemovePiece(destination);
+            p.DecrementMove();
+
+            if (captured != null)
+            {
+                Board.SetPiece(captured, destination);
+                _captured.Remove(captured);
+            }
+
+            Board.SetPiece(p, origin);  
         }
 
         public void ValidateOriginPosition(Position pos)
@@ -77,13 +105,46 @@ namespace xadrez_console.chess
         {
             HashSet<Piece> aux = new HashSet<Piece>();
 
-            foreach (Piece piece in _captured)
+            foreach (Piece piece in _pieces)
             {
                 if (piece.Color == color)
                     aux.Add(piece);
             }
             aux.ExceptWith(_capturedPieces(color));
             return aux;
+        }
+
+        private Color Opponent(Color color)
+        {
+            return color == Color.White ? Color.Black : Color.White; 
+        }
+
+        private Piece King(Color color)
+        {
+            foreach(Piece piece in _piecesInGame(color))
+            {
+                if (piece is King)
+                    return piece;
+            }
+
+            return null;
+        }
+
+        public bool IsInCheck(Color color)
+        {
+            Piece king = King(color);
+            if (king == null)
+            {
+                throw new BoardException($"Não tem Rei da cor {color} no tabuleiro!");
+            }
+
+            foreach(Piece piece in _piecesInGame(Opponent(color)))
+            {
+                bool[,] mat = piece.PossibleMoves();
+                if (mat[king.Position.Line, king.Position.Column])
+                    return true;
+            }
+            return false;
         }
 
         public void SetNewPiece(char column, int line, Piece piece)
