@@ -147,6 +147,20 @@ namespace xadrez_console.chess
 
             Piece p = Board.Piece(destination);
 
+            // jogada especial - promocao
+            if (p is Pawn)
+            {
+                if ((p.Color == Color.White && destination.Line == 0) || (p.Color == Color.Black && destination.Line == 7))
+                {
+                    p = Board.RemovePiece(destination);
+                    _pieces.Remove(p);
+
+                    Piece queen = new Queen(Board, p.Color);
+                    Board.SetPiece(queen, destination);
+                    _pieces.Add(queen);
+                }
+            }
+
             Check = IsInCheck(Opponent(CurrentPlayer)) ? true : false;
 
             if (TestCheckmate(Opponent(CurrentPlayer)))
