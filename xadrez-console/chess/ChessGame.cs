@@ -12,6 +12,7 @@ namespace xadrez_console.chess
         private HashSet<Piece> _pieces = new HashSet<Piece>();
         private HashSet<Piece> _captured = new HashSet<Piece>();
         public bool Check { get; private set; }
+        public Piece VulnerableEnPassant { get; private set; }
         public ChessGame()
         {
             Board = new Board(8, 8);
@@ -19,6 +20,7 @@ namespace xadrez_console.chess
             CurrentPlayer = Color.White;
             Finished = false;
             Check = false;
+            VulnerableEnPassant = null;
             StartGame();
         }
 
@@ -57,29 +59,23 @@ namespace xadrez_console.chess
                 Board.SetPiece(T, destinationT);
             }
 
+            // jogada especial - en passant
+            if (p is Pawn)
+            {
+                if (origin.Column != destination.Column && capturedPiece == null)
+                {
+                    Position posP;
+                    if (p.Color == Color.White)
+                        posP = new Position(destination.Line + 1, destination.Column);
+                    else
+                        posP = new Position(destination.Line - 1, destination.Column);
+
+                    capturedPiece = Board.RemovePiece(posP);
+                    _captured.Add(capturedPiece);
+                }
+            }
+
             return capturedPiece;
-        }
-
-        public void MakesMove(Position origin, Position destination)
-        {
-            Piece capturedPiece = SetMove(origin, destination);
-
-            if (IsInCheck(CurrentPlayer))
-            {
-                UndoMovement(origin, destination, capturedPiece);
-                throw new BoardException("Você não pode se colocar em xeque!");
-            }
-
-            Check = IsInCheck(Opponent(CurrentPlayer)) ? true : false;
-
-            if (TestCheckmate(Opponent(CurrentPlayer)))
-            {
-                Finished = true;
-            } else
-            {
-                Round++;
-                ChangePlayer();
-            }
         }
 
         public void UndoMovement(Position origin, Position destination, Piece captured)
@@ -117,6 +113,60 @@ namespace xadrez_console.chess
                 T.IncrementMove();
 
                 Board.SetPiece(T, originT);
+            }
+
+            // jogada especical - en passant
+            if (p is Pawn)
+            {
+                if (origin.Column != destination.Column && captured != VulnerableEnPassant)
+                {
+                    Piece pawn = Board.RemovePiece(destination);
+                    Position posP;
+
+                    if (p.Color == Color.White)
+                    {
+                        posP = new Position(3, destination.Column);
+                    } else
+                    {
+                        posP = new Position(4, destination.Column);
+                    }
+                    Board.SetPiece(pawn, posP);
+                }
+            }
+        }
+
+        public void MakesMove(Position origin, Position destination)
+        {
+            Piece capturedPiece = SetMove(origin, destination);
+
+            if (IsInCheck(CurrentPlayer))
+            {
+                UndoMovement(origin, destination, capturedPiece);
+                throw new BoardException("Você não pode se colocar em xeque!");
+            }
+
+            Piece p = Board.Piece(destination);
+
+            Check = IsInCheck(Opponent(CurrentPlayer)) ? true : false;
+
+            if (TestCheckmate(Opponent(CurrentPlayer)))
+            {
+                Finished = true;
+            }
+            else
+            {
+                Round++;
+                ChangePlayer();
+            }
+
+            // jogada especial - en passant
+            if (p is Pawn && (destination.Line == origin.Line - 2 || destination.Line == origin.Line + 2))
+            {
+                VulnerableEnPassant = p;
+            }
+            else
+            {
+                VulnerableEnPassant = null;
             }
         }
 
@@ -230,7 +280,6 @@ namespace xadrez_console.chess
             return true;
         }
 
-
         public void SetNewPiece(char column, int line, Piece piece)
         {
             Board.SetPiece(piece, new ChessPosition(column, line).ToPosition());
@@ -247,14 +296,14 @@ namespace xadrez_console.chess
             SetNewPiece('f', 1, new Bishop(Board, Color.White));
             SetNewPiece('g', 1, new Horse(Board, Color.White));
             SetNewPiece('h', 1, new Tower(Board, Color.White));
-            SetNewPiece('a', 2, new Pawn(Board, Color.White));
-            SetNewPiece('b', 2, new Pawn(Board, Color.White));
-            SetNewPiece('c', 2, new Pawn(Board, Color.White));
-            SetNewPiece('d', 2, new Pawn(Board, Color.White));
-            SetNewPiece('e', 2, new Pawn(Board, Color.White));
-            SetNewPiece('f', 2, new Pawn(Board, Color.White));
-            SetNewPiece('g', 2, new Pawn(Board, Color.White));
-            SetNewPiece('h', 2, new Pawn(Board, Color.White));
+            SetNewPiece('a', 2, new Pawn(Board, Color.White, this));
+            SetNewPiece('b', 2, new Pawn(Board, Color.White, this));
+            SetNewPiece('c', 2, new Pawn(Board, Color.White, this));
+            SetNewPiece('d', 2, new Pawn(Board, Color.White, this));
+            SetNewPiece('e', 2, new Pawn(Board, Color.White, this));
+            SetNewPiece('f', 2, new Pawn(Board, Color.White, this));
+            SetNewPiece('g', 2, new Pawn(Board, Color.White, this));
+            SetNewPiece('h', 2, new Pawn(Board, Color.White, this));
 
             SetNewPiece('a', 8, new Tower(Board, Color.Black));
             SetNewPiece('b', 8, new Horse(Board, Color.Black));
@@ -264,14 +313,14 @@ namespace xadrez_console.chess
             SetNewPiece('f', 8, new Bishop(Board, Color.Black));
             SetNewPiece('g', 8, new Horse(Board, Color.Black));
             SetNewPiece('h', 8, new Tower(Board, Color.Black));
-            SetNewPiece('a', 7, new Pawn(Board, Color.Black));
-            SetNewPiece('b', 7, new Pawn(Board, Color.Black));
-            SetNewPiece('c', 7, new Pawn(Board, Color.Black));
-            SetNewPiece('d', 7, new Pawn(Board, Color.Black));
-            SetNewPiece('e', 7, new Pawn(Board, Color.Black));
-            SetNewPiece('f', 7, new Pawn(Board, Color.Black));
-            SetNewPiece('g', 7, new Pawn(Board, Color.Black));
-            SetNewPiece('h', 7, new Pawn(Board, Color.Black));
+            SetNewPiece('a', 7, new Pawn(Board, Color.Black, this));
+            SetNewPiece('b', 7, new Pawn(Board, Color.Black, this));
+            SetNewPiece('c', 7, new Pawn(Board, Color.Black, this));
+            SetNewPiece('d', 7, new Pawn(Board, Color.Black, this));
+            SetNewPiece('e', 7, new Pawn(Board, Color.Black, this));
+            SetNewPiece('f', 7, new Pawn(Board, Color.Black, this));
+            SetNewPiece('g', 7, new Pawn(Board, Color.Black, this));
+            SetNewPiece('h', 7, new Pawn(Board, Color.Black, this));
         }
     }
 }
