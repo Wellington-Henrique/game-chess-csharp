@@ -64,7 +64,7 @@ namespace xadrez_console
 
                 Console.WriteLine();
             }
-            Console.WriteLine(" a b c d e f g h");
+            Console.WriteLine("  a b c d e f g h");
         }
 
         public static void PrintBoard(Board board, bool[,] possiblePositions)
@@ -87,7 +87,7 @@ namespace xadrez_console
                 }
                 Console.WriteLine();
             }
-            Console.WriteLine(" a b c d e f g h");
+            Console.WriteLine("  a b c d e f g h");
         }
 
         public static void PrintPiece(Piece piece)

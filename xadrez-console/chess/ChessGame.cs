@@ -25,13 +25,37 @@ namespace xadrez_console.chess
         public Piece SetMove(Position origin, Position destination)
         {
             Piece p = Board.RemovePiece(origin);    
-
             p.IncrementMove();
+
             Piece capturedPiece = Board.RemovePiece(destination);
             Board.SetPiece(p, destination);
 
             if (capturedPiece != null)
                 _captured.Add(capturedPiece);
+
+            // jogada especial - roque pequeno
+            if (p is King && destination.Column == origin.Column + 2)
+            {
+                Position originT = new Position(origin.Line, origin.Column + 3);
+                Position destinationT = new Position(origin.Line, origin.Column + 1);
+
+                Piece T = Board.RemovePiece(originT);
+                T.IncrementMove();
+
+                Board.SetPiece(T, destinationT);
+            }
+
+            // jogada especial - roque grande
+            if (p is King && destination.Column == origin.Column - 2)
+            {
+                Position originT = new Position(origin.Line, origin.Column - 4);
+                Position destinationT = new Position(origin.Line, origin.Column - 1);
+
+                Piece T = Board.RemovePiece(originT);
+                T.IncrementMove();
+
+                Board.SetPiece(T, destinationT);
+            }
 
             return capturedPiece;
         }
@@ -69,7 +93,31 @@ namespace xadrez_console.chess
                 _captured.Remove(captured);
             }
 
-            Board.SetPiece(p, origin);  
+            Board.SetPiece(p, origin);
+
+            // jogada especial - roque pequeno
+            if (p is King && destination.Column == origin.Column + 2)
+            {
+                Position originT = new Position(origin.Line, origin.Column + 3);
+                Position destinationT = new Position(origin.Line, origin.Column + 1);
+
+                Piece T = Board.RemovePiece(destinationT);
+                T.DecrementMove();
+
+                Board.SetPiece(T, origin);
+            }
+
+            // jogada especial - roque grande
+            if (p is King && destination.Column == origin.Column - 2)
+            {
+                Position originT = new Position(origin.Line, origin.Column - 4);
+                Position destinationT = new Position(origin.Line, origin.Column - 1);
+
+                Piece T = Board.RemovePiece(destinationT);
+                T.IncrementMove();
+
+                Board.SetPiece(T, originT);
+            }
         }
 
         public void ValidateOriginPosition(Position pos)
@@ -195,7 +243,7 @@ namespace xadrez_console.chess
             SetNewPiece('b', 1, new Horse(Board, Color.White));
             SetNewPiece('c', 1, new Bishop(Board, Color.White));
             SetNewPiece('d', 1, new Queen(Board, Color.White));
-            SetNewPiece('e', 1, new King(Board, Color.White));
+            SetNewPiece('e', 1, new King(Board, Color.White, this));
             SetNewPiece('f', 1, new Bishop(Board, Color.White));
             SetNewPiece('g', 1, new Horse(Board, Color.White));
             SetNewPiece('h', 1, new Tower(Board, Color.White));
@@ -212,7 +260,7 @@ namespace xadrez_console.chess
             SetNewPiece('b', 8, new Horse(Board, Color.Black));
             SetNewPiece('c', 8, new Bishop(Board, Color.Black));
             SetNewPiece('d', 8, new Queen(Board, Color.Black));
-            SetNewPiece('e', 8, new King(Board, Color.Black));
+            SetNewPiece('e', 8, new King(Board, Color.Black, this));
             SetNewPiece('f', 8, new Bishop(Board, Color.Black));
             SetNewPiece('g', 8, new Horse(Board, Color.Black));
             SetNewPiece('h', 8, new Tower(Board, Color.Black));

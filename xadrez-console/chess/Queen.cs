@@ -33,7 +33,6 @@ namespace xadrez_console.chess
                 {
                     break;
                 }
-
                 pos.DefineValues(pos.Line, pos.Column - 1);
             }
 
@@ -46,8 +45,7 @@ namespace xadrez_console.chess
                 {
                     break;
                 }
-
-                pos.DefineValues(pos.Line - 1, pos.Column - 1);
+                pos.DefineValues(pos.Line, pos.Column + 1);
             }
 
             //acima
@@ -59,7 +57,6 @@ namespace xadrez_console.chess
                 {
                     break;
                 }
-
                 pos.DefineValues(pos.Line - 1, pos.Column);
             }
 
@@ -72,7 +69,6 @@ namespace xadrez_console.chess
                 {
                     break;
                 }
-
                 pos.DefineValues(pos.Line + 1, pos.Column);
             }
 
@@ -85,7 +81,6 @@ namespace xadrez_console.chess
                 {
                     break;
                 }
-
                 pos.DefineValues(pos.Line - 1, pos.Column - 1);
             }
 
@@ -98,8 +93,7 @@ namespace xadrez_console.chess
                 {
                     break;
                 }
-
-                pos.DefineValues(pos.Line - 1, pos.Column - 1);
+                pos.DefineValues(pos.Line - 1, pos.Column + 1);
             }
 
             //se
@@ -111,7 +105,6 @@ namespace xadrez_console.chess
                 {
                     break;
                 }
-
                 pos.DefineValues(pos.Line + 1, pos.Column + 1);
             }
 
@@ -124,7 +117,6 @@ namespace xadrez_console.chess
                 {
                     break;
                 }
-
                 pos.DefineValues(pos.Line + 1, pos.Column - 1);
             }
 
